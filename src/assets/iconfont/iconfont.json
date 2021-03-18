@@ -1,0 +1,86 @@
+{
+  "id": "2420344",
+  "name": "DormitoryManager",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "13381238",
+      "name": "首页",
+      "font_class": "shouye-",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "1200058",
+      "name": "学校概况",
+      "font_class": "xuexiaogaikuang",
+      "unicode": "e6d1",
+      "unicode_decimal": 59089
+    },
+    {
+      "icon_id": "2681975",
+      "name": "管理员",
+      "font_class": "guanliyuan",
+      "unicode": "e6fb",
+      "unicode_decimal": 59131
+    },
+    {
+      "icon_id": "5582329",
+      "name": "退",
+      "font_class": "tui",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    },
+    {
+      "icon_id": "7450634",
+      "name": "审批",
+      "font_class": "shenpi",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
+      "icon_id": "8084573",
+      "name": "改善/更换",
+      "font_class": "gaishan",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "8156541",
+      "name": "学生",
+      "font_class": "xuesheng",
+      "unicode": "e639",
+      "unicode_decimal": 58937
+    },
+    {
+      "icon_id": "10314094",
+      "name": "宿舍",
+      "font_class": "sushe",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "14975815",
+      "name": "修理",
+      "font_class": "xiuli",
+      "unicode": "e62c",
+      "unicode_decimal": 58924
+    },
+    {
+      "icon_id": "17832806",
+      "name": "分配",
+      "font_class": "fenpei",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "18916428",
+      "name": "楼",
+      "font_class": "lou",
+      "unicode": "e6b7",
+      "unicode_decimal": 59063
+    }
+  ]
+}
