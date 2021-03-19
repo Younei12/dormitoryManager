@@ -48,21 +48,21 @@
 楼栋编号（唯一），楼栋名称，楼栋类别（男寝/女寝），楼层数，寝室数
 [
     {
-        buildingNum:1,
+        buildingId:1,
         building:'男一',
         buildingType:'男寝',
         layers:6,
         rooms:36
     },
     {
-        buildingNum:2,
+        buildingId::2,
         building:'男二',
         buildingType:'男寝',
         layers:6,
         rooms:36
     },
     {
-        buildingNum:3,
+        buildingId::3,
         building:'女一',
         buildingType:'女寝',
         layers:6,
@@ -73,13 +73,14 @@
 
 #   宿舍表
 ```
-楼栋编号，类别（男寝或女寝），楼层，宿舍号，宿舍总容纳人数，已住人数，剩余床位
+宿舍id（唯一），楼栋编号，类别（男寝或女寝），楼层，宿舍号，宿舍总容纳人数，已住人数，剩余床位
 [
     {
         buildingNum:1,
         buildingType:'男寝',
         layer:3,
         room:306,
+        roomId:13306,
         count:6,
         now:5,
         surplus:1
@@ -88,11 +89,23 @@
         buildingNum:3,
         buildingType:'女寝',
         layer:2,
+        roomId:32204,
         room:204,
         count:6,
         now:4,
         surplus:2
-    }
+    },
+    {
+        buildingNum:1,
+        buildingType:'男寝',
+        layer:3,
+        roomId:13304,
+        room:304,
+        count:6,
+        now:6,
+        surplus:0,
+        disabled: false
+    },
 ]
 ```
 

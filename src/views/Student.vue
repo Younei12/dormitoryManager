@@ -7,11 +7,14 @@
             el-input.searchInput(placeholder="请输入内容" v-model="inputSearch")
             el-button.searchButton(@click="search") 搜索
         .buttomContent
-            el-table.studentTable(:data="tableData" border style="width: 100%")
+            el-table.studentTable(:data="students" border style="width: 100%")
                 el-table-column(prop="num" label="学号")
                 el-table-column(prop="name" label="姓名")
                 el-table-column(prop="sex" label="性别")
-                el-table-column(prop="address" label="宿舍楼")
+                el-table-column(prop="liveStatus" label="住宿状态")
+                el-table-column(prop="building" label="宿舍楼")
+                el-table-column(prop="room" label="宿舍号")
+                el-table-column(prop="major" label="专业")
                 el-table-column( label="操作")
                     template(slot-scope="scope")
                         // @click="dialogVisible = true" 触发弹框
@@ -29,7 +32,6 @@
                 .editRow 学  号：{{editNum}} 
                 .editRow
                     el-form-item(label="姓名" prop="name")
-                        //- el-input.editInput(v-model="editName" prop="name")
                         el-input.editInput(v-model="ruleForm.name")
                 .editRow
                     el-form-item(label="性别")
@@ -37,19 +39,32 @@
                         el-radio-group(v-model="locked" @change="sexChange")
                             el-radio(label="男")
                             el-radio(label="女")
+                .editRow
+                    el-form-item(label="住宿状态")
+                        el-radio-group(v-model="liveLocked" @change="liveChange")
+                            el-radio(label="住宿")
+                            el-radio(label="退宿")
+                            el-radio(label="未安排")
                 .editRow 宿舍楼：
-                    //- el-form-item(label="宿舍楼")
-                    el-select(v-model="value2" placeholder="请选择" @change="selectAddress")
-                        el-option(v-for="item in options2"
-                            :key="item.value"
-                            :label="item.label"
-                            :value="item.value"
+                    // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
+                    el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
+                        el-option(v-for="item in buildings"
+                            :key="item.buildingId"
+                            :label="item.label"     
+                            :value="item.buildingId"
                             :disabled="item.disabled")
-
-                //- span.editTips(ref="editTips") 请认真核对学生信息
+                .editRow 宿舍号：
+                    el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
+                        el-option(v-for="item in rooms"
+                            :key="item.roomId"
+                            :label="item.room"
+                            :value="item.roomId"
+                            :disabled="item.disabled")
+                .editRow
+                    el-form-item(label="专业" prop="major")
+                        el-input.editInput(v-model="ruleForm.major")
                 br 
                 br
-                //- .btns(slot="footer" class="dialog-footer")
                 el-form-item
                     // :disabled="saveBtnState"
                     // dialogVisible 对话框是否可见
@@ -65,10 +80,13 @@
         // 用来判断是按照何种方式搜索
         value:'',
         // 设置宿舍下拉选择框的默认值
-        value2:'',
+        buildingValue:'',
         dialogVisible: false,
+        // 宿舍号
+        roomsValue:'',
         editIndex:'',
         inputSearch: '',
+        // 学生管理 搜索方式
         searchOptions:[
             {
                 value: 1,
@@ -79,55 +97,79 @@
                 label: '按姓名搜索'
             },
         ],
-        tableData:[
+        // 学生信息表
+        students:[
             {
-                num:1,
+                num:20160102121,
                 name:'张三',
                 sex:'男',
-                address:'男一宿舍楼',
-                edit:'删除 编辑'
+                liveStatus:'住宿',
+                building:'男一宿舍楼',
+                room:306,
+                major:'商务英语'
             },
             {
-                num:2,
+                num:20160102122,
                 name:'李四',
                 sex:'男',
-                address:'男二宿舍楼'
+                liveStatus:'退宿',
+                building:'',
+                room:'',
+                major:'商务英语'
             },
             {
-                num:3,
+                num:20160102103,
                 name:'李尔',
                 sex:'女',
-                address:'女一宿舍楼'
+                liveStatus:'住宿',
+                building:'女一宿舍楼',
+                room:205,
+                major:'商务英语'
             },
             {
-                num:4,
+                num:20160101201,
                 name:'汪柳',
                 sex:'女',
-                address:'女二宿舍楼'
+                liveStatus:'住宿',
+                building:'女二宿舍楼',
+                room:103,
+                major:'国际贸易'
             },
             {
-                num:5,
+                num:20160101205,
                 name:'程漆',
                 sex:'男',
-                address:'男二宿舍楼'
+                liveStatus:'住宿',
+                building:'男二宿舍楼',
+                room:403,
+                major:'国际贸易'
             },
             {
-                num:6,
+                num:20160101206,
                 name:'卢飞',
                 sex:'男',
-                address:'男二宿舍楼'
+                liveStatus:'住宿',
+                building:'男二宿舍楼',
+                room:403,
+                major:'国际贸易'
             },
             {
-                num:7,
+                num:20160101207,
                 name:'娜美',
                 sex:'女',
-                address:'女二宿舍楼'
+                liveStatus:'住宿',
+                building:'女二宿舍楼',
+                room:103,
+                major:'国际贸易'
             },
             {
-                num:8,
+                num:20160101208,
                 name:'妮可',
                 sex:'女',
-                address:'女一宿舍楼'
+                liveStatus:'未安排',
+                building:'',
+                room:'',
+                major:'国际贸易'
             },
         ],
         editNum:'',
@@ -135,40 +177,98 @@
         editSex:'',
         editAddress:'',
         locked:'',
-        options2:[
+        liveLocked:'',
+        // 楼栋列表
+        buildings:[
             {
-                value: '选项1',
+                buildingId: '1',
                 label: '男一宿舍',
-                type:'男',
+                buildingType:'男寝',
                 disabled: false
             },
             {
-                value: '选项2',
+                buildingId: '2',
                 label: '男二宿舍',
-                type:'男',
+                buildingType:'男寝',
                 disabled: false
             },
             {
-                value: '选项3',
+                buildingId: '3',
                 label: '女一宿舍',
-                type:'女',
+                buildingType:'女寝',
                 disabled: false
             },
             {
-                value: '选项4',
+                buildingId: '4',
                 label: '女二宿舍',
-                type:'女',
+                buildingType:'女寝',
                 disabled: false
             },
         ],
+        // 全部宿舍列表
+        AllRooms:[
+            {
+                buildingNum:1,
+                buildingType:'男寝',
+                layer:3,
+                roomId:13306,
+                room:306,
+                count:6,
+                now:5,
+                surplus:1,
+                disabled: false
+            },
+            {
+                buildingNum:1,
+                buildingType:'男寝',
+                layer:3,
+                roomId:13304,
+                room:304,
+                count:6,
+                now:6,
+                surplus:0,
+                disabled: false
+            },
+            ,
+            {
+                buildingNum:1,
+                buildingType:'男寝',
+                layer:4,
+                roomId:14401,
+                room:401,
+                count:6,
+                now:3,
+                surplus:3,
+                disabled: false
+            },
+            {
+                buildingNum:3,
+                buildingType:'女寝',
+                layer:2,
+                roomId:32204,
+                room:204,
+                count:6,
+                now:4,
+                surplus:2
+            },
+        ],
+        // select 所要渲染的宿舍的列表
+        rooms:[],
         saveBtnState:false,
+        // 表单验证
         ruleForm:{
-            name:''
+            name:'',
+            liveStatus:'',
+            major:''
         },
+        // 表单验证规则
         rules:{
             name:[
                 { required: true, message: '请输入学生姓名', trigger: 'blur' },
                 { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+            ],
+            major:[
+                {required: true, message: '请输入学生所在专业', trigger: 'blur' }
             ]
         }
       }
@@ -176,43 +276,57 @@
     methods: {
         edit(index){
             // 每次点击编辑按钮的时候，将数组中的状态都重置为true，否则点击一次之后被禁用选项的状态会一直保持
-            for(let i=0;i<this.options2.length;i++){
-                this.options2[i].disabled=false
+            for(let i=0;i<this.buildings.length;i++){
+                this.buildings[i].disabled=false
             }
+            // 获取当前这一行的index
             this.editIndex=index
+            // 点击编辑后，修改对话框控制显示隐藏属性的值
             this.dialogVisible=true
-            this.editNum = this.tableData[index].num
-            this.ruleForm.name = this.tableData[index].name
-            // 性别默认值
-            if(this.tableData[index].sex == '女'){
+            // 获取当前点击这一行的学号
+            this.editNum = this.students[index].num
+            // 获取当前点击这一行的姓名
+            this.ruleForm.name = this.students[index].name
+            // 获取当前点击这一行的住宿状态
+            this.liveLocked = this.students[index].liveStatus
+            // 获取当前点击这一行的性别
+            if(this.students[index].sex == '女'){
                 // 如果当前这一行的性别是女生，则设置单选按钮的默认值为女
                 this.locked = '女'
                 // 遍历宿舍楼列表，将全部男生宿舍禁用
-                for(let i=0;i<this.options2.length;i++){
-                    if(this.options2[i].type!='女'){
-                        this.options2[i].disabled=true
+                for(let i=0;i<this.buildings.length;i++){
+                    if(this.buildings[i].buildingType!='女寝'){
+                        this.buildings[i].disabled=true
                     }
                 }
             }else{
                 this.locked = '男'
-                for(let i=0;i<this.options2.length;i++){
-                    if(this.options2[i].type!='男'){
-                        this.options2[i].disabled=true
+                for(let i=0;i<this.buildings.length;i++){
+                    if(this.buildings[i].buildingType!='男寝'){
+                        this.buildings[i].disabled=true
                     }
                 }
             }
-            // 宿舍楼默认值
-            this.value2 = this.tableData[this.editIndex].address
+            // 获取当前这一行所在的宿舍楼
+            this.buildingValue = this.students[this.editIndex].building
+            //  获取当前这一行所在的寝室号
+            this.roomsValue = this.students[this.editIndex].room
+            // 获取专业
+            this.ruleForm.major = this.students[index].major
         },
+        // 保存后，把修改的内容替换原来的内容
         save(formName){
-            this.tableData[this.editIndex].name = this.ruleForm.name
+            this.students[this.editIndex].name = this.ruleForm.name
             // 修改后的性别值
             if(this.locked == '男'){
-                this.tableData[this.editIndex].sex = '男'
+                this.students[this.editIndex].sex = '男'
             }else{
-                this.tableData[this.editIndex].sex = '女'
+                this.students[this.editIndex].sex = '女'
             }
-            this.tableData[this.editIndex].address = this.value2
+            // 保存修改后的宿舍楼的信息
+            this.students[this.editIndex].building = this.buildingValue
+            // 保存修改后的住宿状态信息
+            this.students[this.editIndex].liveStatus = this.liveLocked
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.$root.$message.success('保存成功');
@@ -225,53 +339,88 @@
                 }
             })
         },
+        // 改变性别时触发
         sexChange(){
-            this.value2='请选择'
+            this.buildingValue='请选择'
             // select框禁用重置
-            for(let i=0;i<this.options2.length;i++){
-                this.options2[i].disabled=false
+            for(let i=0;i<this.buildings.length;i++){
+                this.buildings[i].disabled=false
             }
             // 性别改变为男时
             if(this.locked == '男'){
-                for(let i=0;i<this.options2.length;i++){
-                    if(this.options2[i].type!='男'){
-                        this.options2[i].disabled=true
+                for(let i=0;i<this.buildings.length;i++){
+                    if(this.buildings[i].buildingType!='男寝'){
+                        this.buildings[i].disabled=true
                     }
                 }
             }else{
                 // 性别改变为女时
-                for(let i=0;i<this.options2.length;i++){
-                    if(this.options2[i].type!='女'){
-                        this.options2[i].disabled=true
+                for(let i=0;i<this.buildings.length;i++){
+                    if(this.buildings[i].buildingType!='女寝'){
+                        this.buildings[i].disabled=true
                     }
                 }
             }
-            this.$root.$message('请选择宿舍');
-
+            if(this.liveLocked!='退宿'){
+                this.$root.$message('请选择宿舍');
+            }
         },
+        // 住宿状态
+        liveChange(){
+            if(this.liveLocked != '住宿'){
+                this.buildingValue = '请选择'
+                this.roomsValue = '请选择'
+            }
+        },
+        // 修改宿舍楼栋,这个value是自动传过来的
         selectAddress(value){
             let obj = {}
-            // find方法会在options2数组中遍历寻找符合要求的value，之后再将符合要求的 '对象'，赋值给obj，之后再获取obj中的属性
-            obj = this.options2.find((item) => {
-                return item.value=== value
+            // find方法会在buildings数组中遍历寻找符合要求的value，之后再将符合要求的 '对象'，赋值给obj，之后再获取obj中的属性
+            obj = this.buildings.find((item) => {
+                return item.buildingId=== value
             })
             // 在这里获取obj的属性，obj就是当前select框中选择的那个完整的对象
-            this.value2=obj.label
-            console.log(obj);
-            // if(this.value2='请选择'){
-            //     this.saveBtnState=true
-            //     this.$refs.editTips.innerText='请选择学生所在宿舍'
-            // }
+            this.buildingValue=obj.label
+            // console.log(obj);
+            console.log(this.buildingValue);    // 男一宿舍
+            // 在这里进行 rooms[] 的赋值
+            for(let i=0;i<this.AllRooms.length;i++){
+                if(this.AllRooms[i].buildingNum == this.buildingValue){
+                    this.rooms.push(AllRooms[i])
+                }
+            }
+            // 根据每个宿舍床位的剩余概况，来判断是否禁用
+            for(let i=0;j<this.rooms.length;j++){
+                if(this.rooms[i].surplus==0){
+                    this.rooms[i].disabled==true
+                }
+            }
         },
+        // 修改所在寝室
+        // 思考：AllRooms[]数组中装着所有 room 的信息，拿到 this.buildingValue的值，然后去遍历 AllRooms[]
+        // buildingNum == this.buildingValue，则吧 buildingNum 这一条 push 到rooms[]
+        // 下拉选择框，渲染的是，和楼栋相匹配的 rooms[] 中的寝室号
+        // 渲染之前，先遍历 rooms[]，if 某个宿舍的 surplus == 0，则把这个宿舍的 disabled=true (禁用掉剩余床位为0的宿舍)
+        selectRoom(value){
+            let obj={}
+            obj = this.rooms.find((item) => {
+                return item.roomId=== value
+            })
+            // 在这里获取obj的属性，obj就是当前select框中选择的那个完整的对象
+            this.roomValue=obj.label
+            // console.log(obj);
+        },
+        // 删除一行
         handleDelete(index){
             // 询问后再关闭
             this.$confirm('确认删除？')
                 .then(_ => {
-                    this.tableData.splice(index,1)
+                    this.students.splice(index,1)
                     this.$root.$message.success('删除成功');
                 })
                 .catch(_ => {});
         },
+        // 关闭对话框
         handleClose(done) {
             // 点击右上角的 x 直接关闭
             done();
@@ -292,7 +441,7 @@
             }
             // 按学号查找
             if(this.value==1){
-                for(let i=0;i<this.tableData;i++){
+                for(let i=0;i<this.students;i++){
                     
                 }
             }
