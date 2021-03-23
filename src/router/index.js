@@ -1,6 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '../views/Login.vue'
+// 重复点击同一个路由报错的问题
+const originalPush = VueRouter.prototype.push
+
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
 
 Vue.use(VueRouter)
 
@@ -75,6 +81,8 @@ const routes = [
       {
         path:'/index',
         name:'Index',
+        // meta 做权限控制
+        meta:[],
         component: () => import('../views/Index.vue')
       }
     ]

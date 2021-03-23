@@ -18,14 +18,14 @@
                 :http-request="httpRequest")
                 el-button(type="primary") 批量上传
         .buttomContent
-            el-table.studentTable(:data="students.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
-                el-table-column(prop="num" label="学号")
-                el-table-column(prop="name" label="姓名")
-                el-table-column(prop="sex" label="性别")
-                el-table-column(prop="liveStatus" label="住宿状态")
-                el-table-column(prop="building" label="宿舍楼")
-                el-table-column(prop="room" label="宿舍号")
-                el-table-column(prop="major" label="专业")
+            el-table.studentTable(:data="showStudents.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
+                el-table-column(prop="num" sortable label="学号")
+                el-table-column(prop="name" sortable label="姓名")
+                el-table-column(prop="sex" sortable label="性别")
+                el-table-column(prop="liveStatus" sortable label="住宿状态")
+                el-table-column(prop="building" sortable label="宿舍楼")
+                el-table-column(prop="room" sortable label="宿舍号")
+                el-table-column(prop="major" sortable label="专业")
                 el-table-column( label="操作")
                     template(slot-scope="scope")
                         // @click="dialogVisible = true" 触发弹框
@@ -124,8 +124,48 @@ export default {
                 label: '按姓名搜索'
             },
         ],
-        // 学生信息表
+        // 全部的学生信息
         students:[
+            {
+                num:20170101001,
+                name:'小谭',
+                sex:'女',
+                liveStatus:'住宿',
+                buildingId:3,
+                building:'女一宿舍楼',
+                room:708,
+                major:'追光'
+            },
+            {
+                num:20170101002,
+                name:'小齐',
+                sex:'女',
+                liveStatus:'住宿',
+                buildingId:3,
+                building:'女一宿舍楼',
+                room:708,
+                major:'追光'
+            },
+            {
+                num:20170101003,
+                name:'鼬内',
+                sex:'女',
+                liveStatus:'住宿',
+                buildingId:3,
+                building:'女一宿舍楼',
+                room:708,
+                major:'追光'
+            },
+            {
+                num:20170101004,
+                name:'小黑',
+                sex:'女',
+                liveStatus:'住宿',
+                buildingId:3,
+                building:'女一宿舍楼',
+                room:708,
+                major:'追光'
+            },
             {
                 num:20160102121,
                 name:'张三',
@@ -207,6 +247,8 @@ export default {
                 major:'国际贸易'
             },
         ],
+        // 在页面上渲染的数据
+        showStudents:[],
         editNum:'',
         editName:'',
         editSex:'',
@@ -311,10 +353,19 @@ export default {
         tableData:[],
         currentPage: 1,//默认显示第一页
         pageSize:10,//默认每页显示10条
-        totalNum: ''
+        totalNum: 0
       }
     },
+    created(){
+        this.showStudent()
+        // 第一次加载页面时的 页面
+        this.totalNum = this.showStudents.length/10
+    },
     methods: {
+        // showStudent[] 赋初始值（所有的学生信息）
+        showStudent(){
+            this.showStudents = this.students
+        },
         edit(index){
             // 清空 rooms
             this.rooms=[]
@@ -331,13 +382,13 @@ export default {
             // 点击编辑后，修改对话框控制显示隐藏属性的值
             this.dialogVisible=true
             // 获取当前点击这一行的学号
-            this.editNum = this.students[index].num
+            this.editNum = this.showStudents[index].num
             // 获取当前点击这一行的姓名
-            this.ruleForm.name = this.students[index].name
+            this.ruleForm.name = this.showStudents[index].name
             // 获取当前点击这一行的住宿状态
-            this.liveLocked = this.students[index].liveStatus
+            this.liveLocked = this.showStudents[index].liveStatus
             // 获取当前点击这一行的性别
-            if(this.students[index].sex == '女'){
+            if(this.showStudents[index].sex == '女'){
                 // 如果当前这一行的性别是女生，则设置单选按钮的默认值为女
                 this.locked = '女'
                 // 遍历宿舍楼列表，将全部男生宿舍禁用
@@ -355,34 +406,35 @@ export default {
                 }
             }
             // 获取当前这一行所在的宿舍楼   值：XX宿舍楼
-            this.buildingValue = this.students[this.editIndex].building
+            this.buildingValue = this.showStudents[this.editIndex].building
 
             // 当前楼栋的 id 
-            this.nowBuilding = this.students[this.editIndex].buildingId
+            this.nowBuilding = this.showStudents[this.editIndex].buildingId
             console.log(this.nowBuilding);
             // 当前选择的这一栋楼内 还有床位的寝室
             this.roomsDisabled()
 
             //  获取当前这一行所在的寝室号
-            this.roomsValue = this.students[this.editIndex].room
+            this.roomsValue = this.showStudents[this.editIndex].room
             // 获取专业
-            this.ruleForm.major = this.students[index].major
+            this.ruleForm.major = this.showStudents[index].major
         },
         // 保存后，把修改的内容替换原来的内容
         save(formName){
-            this.students[this.editIndex].name = this.ruleForm.name
+            this.showStudents[this.editIndex].name = this.ruleForm.name
             // 修改后的性别值
             if(this.locked == '男'){
-                this.students[this.editIndex].sex = '男'
+                this.showStudents[this.editIndex].sex = '男'
             }else{
-                this.students[this.editIndex].sex = '女'
+                this.showStudents[this.editIndex].sex = '女'
             }
             // 保存修改后的宿舍楼的信息
-            this.students[this.editIndex].building = this.buildingValue
+            this.showStudents[this.editIndex].building = this.buildingValue
             // 保存修改后的 寝室号
-            this.students[this.editIndex].room = this. roomsValue
+            this.showStudents[this.editIndex].room = this. roomsValue
             // 保存修改后的住宿状态信息
-            this.students[this.editIndex].liveStatus = this.liveLocked
+            this.showStudents[this.editIndex].liveStatus = this.liveLocked
+            // 表单验证
             this.$refs[formName].validate((valid) => {
                 if (valid) {
                     this.$root.$message.success('保存成功');
@@ -469,7 +521,7 @@ export default {
             // 询问后再关闭
             this.$confirm('确认删除？')
                 .then(_ => {
-                    this.students.splice(index,1)
+                    this.showStudents.splice(index,1)
                     this.$root.$message.success('删除成功');
                 })
                 .catch(_ => {});
@@ -479,18 +531,33 @@ export default {
             // 点击右上角的 x 直接关闭
             done();
         },
-        // 搜索功能
+        // 搜索功能 报错，看后期调接口是否能解决这个问题？？？？？？？？？
         search(){
+            // 先把 显示数组清空，查找到复合的数据再向显示数组赋值
+            this.showStudents=[]
+            let newStudents=[]
             if(this.value != 1 && this.value != 2){
                 this.$root.$message('请选择查找方式');
             }
             // 按学号查找
-            if(this.value==1){
-                for(let i=0;i<this.students;i++){
-                    
+            // if(this.value==1){
+            //     for(let i=0;i<this.students.length;i++){
+            //         if (this.students[i].num == this.inputSearch) {
+            //             // console.log(this.students[i].num);
+            //             // console.log(this.inputSearch);
+            //             this.showStudents = this.students[i]
+            //         }
+            //     }
+            // }
+            for (let i = 0; i < this.students.length; i++) {
+                if(this.value==1 && this.students[i].num == this.inputSearch){
+                    newStudents = this.students[i]
+                }
+                if(this.value==2 && this.students[i].name == this.inputSearch){
+                    newStudents = this.students[i]
                 }
             }
-            console.log(this.value);
+            this.showStudents = newStudents
         },
         // 根据所选楼栋，添加该楼栋的宿舍信息，并设置禁用
         roomsDisabled(){
@@ -512,12 +579,12 @@ export default {
         httpRequest (e) {
             let file = e.file // 文件信息
             if (!file) {
-            // 没有文件
-            return false
+                // 没有文件
+                return false
             } else if (!/\.(xls|xlsx)$/.test(file.name.toLowerCase())) {
             // 格式根据自己需求定义
             this.$message.error('上传格式不正确，请上传xls或者xlsx格式')
-            return false
+                return false
             }
             const fileReader = new FileReader()
             fileReader.onload = (ev) => {
@@ -533,9 +600,11 @@ export default {
                     this.tableData = exl
                     // document.getElementsByName('file')[0].value = '' // 根据自己需求，可重置上传value为空，允许重复上传同一文件
                     for(let i=0;i<this.tableData.length;i++){
-                        this.students.push(this.tableData[i])
+                        this.showStudents.push(this.tableData[i])
                     }
-                    this.totalNum = this.students.length
+                    // 批量上传后，重新获取计算数据的页数
+                    this.totalNum = this.showStudents.length/10
+                    console.log(this.totalNum);
                 } catch (e) {
                     console.log('出错了：：')
                     return false
