@@ -1,129 +1,97 @@
 // 学生管理
 <template lang="pug">
     .student
-        .topSearch
-            el-select.searchSelect(v-model="value" placeholder="请选择查找方式")
-                el-option( v-for="item in searchOptions" :key="item.value" :label="item.label" :value="item.value")
-            el-input.searchInput(placeholder="请输入内容" v-model="inputSearch")
-            el-button.searchButton(@click="search") 搜索
-            el-button.insertButton(@click="insertShow" type="success" :dialogVisible="insertDialogVisible") 添加学生
-            el-dialog.studentDialog(title="添加学生" :visible.sync="insertDialogVisible" width="40%" :before-close="handleClose")
-                StudentDialog
-            el-upload(
-                class="upload"
-                action=""
-                :multiple="false"
-                :show-file-list="false"
-                accept="csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                :http-request="httpRequest")
-                el-button(type="primary") 批量上传
-        .buttomContent
-            el-table.studentTable(:data="showStudents.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
-                el-table-column(prop="num" sortable label="学号")
-                el-table-column(prop="name" sortable label="姓名")
-                el-table-column(prop="sex" sortable label="性别")
-                el-table-column(prop="liveStatus" sortable label="住宿状态")
-                el-table-column(prop="building" sortable label="宿舍楼")
-                el-table-column(prop="room" sortable label="宿舍号")
-                el-table-column(prop="major" sortable label="专业")
-                el-table-column( label="操作")
-                    template(slot-scope="scope")
-                        // @click="dialogVisible = true" 触发弹框
-                        // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
-                        el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope.$index)") 编辑
-                        el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
-        // 分页器
-        el-pagination.pagination(background
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalNum"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage"
-            :page-sizes="[1, 3, 5, 8]"
-            :page-size="pageSize")    
+        TopSearch(:addFlag="true")
+        //- .buttomContent
+        //-     el-table.studentTable(:data="showStudents.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
+        //-         el-table-column(prop="num" sortable label="学号")
+        //-         el-table-column(prop="name" sortable label="姓名")
+        //-         el-table-column(prop="sex" sortable label="性别")
+        //-         el-table-column(prop="liveStatus" sortable label="住宿状态")
+        //-         el-table-column(prop="building" sortable label="宿舍楼")
+        //-         el-table-column(prop="room" sortable label="宿舍号")
+        //-         el-table-column(prop="major" sortable label="专业")
+        //-         el-table-column(label="操作")
+        //-             template(slot-scope="scope")
+        //-                 // @click="dialogVisible = true" 触发弹框
+        //-                 // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
+        //-                 el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope.$index)") 编辑
+        //-                 el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
+        Table(:showStudents="showStudents")
+        // 分页器 
+        //- Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
 
         // 弹框出来，弹筐里具体的内容
-        el-dialog.studentDialog(title="学生信息" :visible.sync="dialogVisible" width="40%" :before-close="handleClose")
-            // ref="ruleForms" ruleForms 代指整个表单                      
-            el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
-                // 学号唯一，不能修改
-                .editRow 学  号：{{editNum}} 
-                .editRow
-                    el-form-item(label="姓名" prop="name")
-                        el-input.editInput(v-model="ruleForm.name")
-                .editRow
-                    el-form-item(label="性别")
-                        // v-model="locked" 页面显示选中效果
-                        el-radio-group(v-model="locked" @change="sexChange")
-                            el-radio(label="男")
-                            el-radio(label="女")
-                .editRow
-                    el-form-item(label="住宿状态")
-                        el-radio-group(v-model="liveLocked" @change="liveChange")
-                            el-radio(label="住宿")
-                            el-radio(label="退宿")
-                            el-radio(label="未安排")
-                .editRow 宿舍楼：
-                    // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
-                    el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
-                        el-option(v-for="item in buildings"
-                            :key="item.buildingId"
-                            :label="item.label"     
-                            :value="item.buildingId"
-                            :disabled="item.disabled")
-                .editRow 宿舍号：
-                    el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
-                        el-option(v-for="item in rooms"
-                            :key="item.roomId"
-                            :label="item.room"
-                            :value="item.roomId"
-                            :disabled="item.disabled")
-                .editRow
-                    el-form-item(label="专业" prop="major")
-                        el-input.editInput(v-model="ruleForm.major")
+        //- el-dialog.studentDialog(title="学生信息" :visible.sync="dialogVisible" width="40%")
+        //-     // ref="ruleForms" ruleForms 代指整个表单                      
+        //-     el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
+        //-         // 学号唯一，不能修改
+        //-         .editRow 学  号：{{editNum}} 
+        //-         .editRow
+        //-             el-form-item(label="姓名" prop="name")
+        //-                 el-input.editInput(v-model="ruleForm.name")
+        //-         .editRow
+        //-             el-form-item(label="性别")
+        //-                 // v-model="locked" 页面显示选中效果
+        //-                 el-radio-group(v-model="locked" @change="sexChange")
+        //-                     el-radio(label="男")
+        //-                     el-radio(label="女")
+        //-         .editRow
+        //-             el-form-item(label="住宿状态")
+        //-                 el-radio-group(v-model="liveLocked" @change="liveChange")
+        //-                     el-radio(label="住宿")
+        //-                     el-radio(label="退宿")
+        //-                     el-radio(label="未安排")
+        //-         .editRow 宿舍楼：
+        //-             // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
+        //-             el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
+        //-                 el-option(v-for="item in buildings"
+        //-                     :key="item.buildingId"
+        //-                     :label="item.label"     
+        //-                     :value="item.buildingId"
+        //-                     :disabled="item.disabled")
+        //-         .editRow 宿舍号：
+        //-             el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
+        //-                 el-option(v-for="item in rooms"
+        //-                     :key="item.roomId"
+        //-                     :label="item.room"
+        //-                     :value="item.roomId"
+        //-                     :disabled="item.disabled")
+        //-         .editRow
+        //-             el-form-item(label="专业" prop="major")
+        //-                 el-input.editInput(v-model="ruleForm.major")
                 
-                el-form-item.buttons
-                    // :disabled="saveBtnState"
-                    // dialogVisible 对话框是否可见
-                    // save(rulesForms) 传整个表单对象
-                    el-button(type="primary" :dialogVisible="dialogVisible" @click.prevent="save('ruleForms')") 保存
-                    el-button(type="danger" @click="dialogVisible = false") 取消
+        //-         el-form-item.buttons
+        //-             // :disabled="saveBtnState"
+        //-             // dialogVisible 对话框是否可见
+        //-             // save(rulesForms) 传整个表单对象
+        //-             el-button(type="primary" :dialogVisible="dialogVisible" @click.prevent="save('ruleForms')") 保存
+        //-             el-button(type="danger" @click="dialogVisible = false") 取消
 </template>
  
 <script>
 import StudentDialog from '../components/studentDialog'
-import XLSX from 'xlsx'
+import TopSearch from '../components/TopSearch'
+import Pagination from '../components/pagination'
+import Table from '../components/Table'
 export default {
     components:{
-        StudentDialog
+        StudentDialog,
+        TopSearch,
+        Pagination,
+        Table
     },
     data() {
       return {
-        // 用来判断是按照何种方式搜索
-        value:'',
         // 楼栋的name
         buildingValue:'',
         // 编辑 对话框是否隐藏
         dialogVisible: false,
-        // 添加学生对话框
-        insertDialogVisible:false,
         // 楼栋的id
         nowBuilding:'',
         // 宿舍号 room字段值
         roomsValue:'',
         editIndex:'',
-        inputSearch: '',
-        // 学生管理 搜索方式
-        searchOptions:[
-            {
-                value: 1,
-                label: '按学号搜索'
-            },
-            {
-                value: 2,
-                label: '按姓名搜索'
-            },
-        ],
         // 全部的学生信息
         students:[
             {
@@ -353,7 +321,7 @@ export default {
         tableData:[],
         currentPage: 1,//默认显示第一页
         pageSize:10,//默认每页显示10条
-        totalNum: 0
+        totalNum: 0 // 一共有多少页
       }
     },
     created(){
@@ -526,39 +494,6 @@ export default {
                 })
                 .catch(_ => {});
         },
-        // 关闭对话框
-        handleClose(done) {
-            // 点击右上角的 x 直接关闭
-            done();
-        },
-        // 搜索功能 报错，看后期调接口是否能解决这个问题？？？？？？？？？
-        search(){
-            // 先把 显示数组清空，查找到复合的数据再向显示数组赋值
-            this.showStudents=[]
-            let newStudents=[]
-            if(this.value != 1 && this.value != 2){
-                this.$root.$message('请选择查找方式');
-            }
-            // 按学号查找
-            // if(this.value==1){
-            //     for(let i=0;i<this.students.length;i++){
-            //         if (this.students[i].num == this.inputSearch) {
-            //             // console.log(this.students[i].num);
-            //             // console.log(this.inputSearch);
-            //             this.showStudents = this.students[i]
-            //         }
-            //     }
-            // }
-            for (let i = 0; i < this.students.length; i++) {
-                if(this.value==1 && this.students[i].num == this.inputSearch){
-                    newStudents = this.students[i]
-                }
-                if(this.value==2 && this.students[i].name == this.inputSearch){
-                    newStudents = this.students[i]
-                }
-            }
-            this.showStudents = newStudents
-        },
         // 根据所选楼栋，添加该楼栋的宿舍信息，并设置禁用
         roomsDisabled(){
             for(let i=0;i<this.AllRooms.length;i++){
@@ -573,53 +508,9 @@ export default {
                 }
             }
         },
-        insertShow(){
-            this.insertDialogVisible=true
-        },
-        httpRequest (e) {
-            let file = e.file // 文件信息
-            if (!file) {
-                // 没有文件
-                return false
-            } else if (!/\.(xls|xlsx)$/.test(file.name.toLowerCase())) {
-            // 格式根据自己需求定义
-            this.$message.error('上传格式不正确，请上传xls或者xlsx格式')
-                return false
-            }
-            const fileReader = new FileReader()
-            fileReader.onload = (ev) => {
-                try {
-                    const data = ev.target.result
-                    const workbook = XLSX.read(data, {
-                    type: 'binary' // 以字符编码的方式解析
-                    })
-                    const exlname = workbook.SheetNames[0] // 取第一张表
-                    const exl = XLSX.utils.sheet_to_json(workbook.Sheets[exlname]) // 生成json表格内容
-                    console.log(exl)
-                    // 将 JSON 数据挂到 data 里
-                    this.tableData = exl
-                    // document.getElementsByName('file')[0].value = '' // 根据自己需求，可重置上传value为空，允许重复上传同一文件
-                    for(let i=0;i<this.tableData.length;i++){
-                        this.showStudents.push(this.tableData[i])
-                    }
-                    // 批量上传后，重新获取计算数据的页数
-                    this.totalNum = this.showStudents.length/10
-                    console.log(this.totalNum);
-                } catch (e) {
-                    console.log('出错了：：')
-                    return false
-                }
-            }
-            fileReader.readAsBinaryString(file)
-        },
-        // 分页
-        handleSizeChange(val) {
-            console.log(`每页 ${val} 条`);
-            this.pageSize = val;    //动态改变
-        },
-        handleCurrentChange(val) {
-            console.log(`当前页: ${val}`);
-            this.currentPage = val;    //动态改变
+        getNewPage:function(data){
+            // console.log(data);
+            this.currentPage = data
         }
     }
   }
@@ -629,24 +520,6 @@ export default {
 .student{
     padding-left: 20px;
     box-sizing: border-box;
-    .topSearch{
-        // padding-bottom: 30px;
-        .searchSelect{
-            float: left;
-        }
-        .searchInput{
-            width: 20%;
-            float: left;
-            margin: 0 15px;
-        }
-        .searchButton{
-            float: left;
-        }
-        .upload{
-            display: inline-block;
-            margin-left: 10px;
-        }
-    }
     .buttomContent{
         width: 80%;
         margin: 30px 0;
@@ -659,9 +532,6 @@ export default {
             .editInput{
                 width: 50%;
             }
-        }
-        .editTips{
-            color: red;
         }
         .buttons{
             padding-left: 35%;

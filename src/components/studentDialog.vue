@@ -1,4 +1,4 @@
-// 添加学生对话框
+// 添加学生 对话框
 <template lang="pug">
     .studentDialog
         // ref="ruleForms" ruleForms 代指整个表单                      
@@ -52,223 +52,132 @@
 export default ({
     props: {
         
-    },data() {
-      return {
-        // 用来判断是按照何种方式搜索
-        value:'',
-        // 楼栋的name
-        buildingValue:'',
-        // 编辑 对话框是否隐藏
-        dialogVisible: false,
-        // 添加学生对话框
-        insertDialogVisible:false,
-        // 楼栋的id
-        nowBuilding:'',
-        // 宿舍号 room字段值
-        roomsValue:'',
-        editIndex:'',
-        inputSearch: '',
-        // 学生管理 搜索方式
-        searchOptions:[
-            {
-                value: 1,
-                label: '按学号搜索'
-            },
-            {
-                value: 2,
-                label: '按姓名搜索'
-            },
-        ],
-        // 学生信息表
-        students:[
-            {
-                num:20160102121,
-                name:'张三',
-                sex:'男',
-                liveStatus:'住宿',
-                buildingId:1,
-                building:'男一宿舍楼',
-                room:306,
-                major:'商务英语'
-            },
-            {
-                num:20160102122,
-                name:'李四',
-                sex:'男',
-                liveStatus:'退宿',
-                buildingId:'',
-                building:'',
-                room:'',
-                major:'商务英语'
-            },
-            {
-                num:20160102103,
-                name:'李尔',
-                sex:'女',
-                liveStatus:'住宿',
-                buildingId:3,
-                building:'女一宿舍楼',
-                room:205,
-                major:'商务英语'
-            },
-            {
-                num:20160101201,
-                name:'汪柳',
-                sex:'女',
-                liveStatus:'住宿',
-                buildingId:4,
-                building:'女二宿舍楼',
-                room:103,
-                major:'国际贸易'
-            },
-            {
-                num:20160101205,
-                name:'程漆',
-                sex:'男',
-                liveStatus:'住宿',
-                buildingId:2,
-                building:'男二宿舍楼',
-                room:403,
-                major:'国际贸易'
-            },
-            {
-                num:20160101206,
-                name:'卢飞',
-                sex:'男',
-                liveStatus:'住宿',
-                buildingId:2,
-                building:'男二宿舍楼',
-                room:403,
-                major:'国际贸易'
-            },
-            {
-                num:20160101207,
-                name:'娜美',
-                sex:'女',
-                liveStatus:'住宿',
-                buildingId:4,
-                building:'女二宿舍楼',
-                room:103,
-                major:'国际贸易'
-            },
-            {
-                num:20160101208,
-                name:'妮可',
-                sex:'女',
-                liveStatus:'未安排',
-                buildingId:'',
-                building:'',
-                room:'',
-                major:'国际贸易'
-            },
-        ],
-        editNum:'',
-        editName:'',
-        editSex:'',
-        editAddress:'',
-        // 性别 绑定
-        locked:'',
-        // 住宿状态绑定
-        liveLocked:'',
-        // 楼栋列表
-        buildings:[
-            {
-                buildingId: '1',
-                label: '男一宿舍',
-                buildingType:'男寝',
-                disabled: false
-            },
-            {
-                buildingId: '2',
-                label: '男二宿舍',
-                buildingType:'男寝',
-                disabled: false
-            },
-            {
-                buildingId: '3',
-                label: '女一宿舍',
-                buildingType:'女寝',
-                disabled: false
-            },
-            {
-                buildingId: '4',
-                label: '女二宿舍',
-                buildingType:'女寝',
-                disabled: false
-            },
-        ],
-        // 全部宿舍列表
-        AllRooms:[
-            {
-                buildingId:1,
-                buildingType:'男寝',
-                layer:3,
-                roomId:13306,
-                room:306,
-                count:6,
-                now:5,
-                surplus:1,
-                disabled: false
-            },
-            {
-                buildingId:1,
-                buildingType:'男寝',
-                layer:3,
-                roomId:13304,
-                room:304,
-                count:6,
-                now:6,
-                surplus:0,
-                disabled: false
-            },
-            {
-                buildingId:1,
-                buildingType:'男寝',
-                layer:4,
-                roomId:14401,
-                room:401,
-                count:6,
-                now:3,
-                surplus:3,
-                disabled: false
-            },
-            {
-                buildingId:3,
-                buildingType:'女寝',
-                layer:2,
-                roomId:32204,
-                room:204,
-                count:6,
-                now:4,
-                surplus:2,
-                disabled: false
-            },
-        ],
-        // select 所要渲染的宿舍的列表
-        rooms:[],
-        saveBtnState:false,
-        // 表单验证
-        ruleForm:{
-            num:'',
-            name:'',
-            liveStatus:'',
-            major:''
-        },
-        // 表单验证规则
-        rules:{
-            num:[
-                { required: true, message: '请输入学生学号', trigger: 'blur' },
-                { min: 11, max: 11, message: '长度11 个字符', trigger: 'blur' }
+    },
+    data() {
+        return {
+            dialogVisible:false,
+            // 楼栋的name
+            buildingValue:'',
+            // 楼栋的id
+            nowBuilding:'',
+            // 宿舍号 room字段值
+            roomsValue:'',
+            editIndex:'',
+            inputSearch: '',
+            editNum:'',
+            editName:'',
+            editSex:'',
+            editAddress:'',
+            // 性别 绑定
+            locked:'',
+            // 住宿状态绑定
+            liveLocked:'',
+            // 楼栋列表
+            buildings:[
+                {
+                    buildingId: '1',
+                    label: '男一宿舍',
+                    buildingType:'男寝',
+                    disabled: false
+                },
+                {
+                    buildingId: '2',
+                    label: '男二宿舍',
+                    buildingType:'男寝',
+                    disabled: false
+                },
+                {
+                    buildingId: '3',
+                    label: '女一宿舍',
+                    buildingType:'女寝',
+                    disabled: false
+                },
+                {
+                    buildingId: '4',
+                    label: '女二宿舍',
+                    buildingType:'女寝',
+                    disabled: false
+                },
             ],
-            name:[
-                { required: true, message: '请输入学生姓名', trigger: 'blur' },
-                { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+            // 全部宿舍列表
+            AllRooms:[
+                {
+                    buildingId:1,
+                    buildingType:'男寝',
+                    layer:3,
+                    roomId:13306,
+                    room:306,
+                    count:6,
+                    now:5,
+                    surplus:1,
+                    disabled: false
+                },
+                {
+                    buildingId:1,
+                    buildingType:'男寝',
+                    layer:3,
+                    roomId:13304,
+                    room:304,
+                    count:6,
+                    now:6,
+                    surplus:0,
+                    disabled: false
+                },
+                {
+                    buildingId:1,
+                    buildingType:'男寝',
+                    layer:4,
+                    roomId:14401,
+                    room:401,
+                    count:6,
+                    now:3,
+                    surplus:3,
+                    disabled: false
+                },
+                {
+                    buildingId:3,
+                    buildingType:'女寝',
+                    layer:2,
+                    roomId:32204,
+                    room:204,
+                    count:6,
+                    now:4,
+                    surplus:2,
+                    disabled: false
+                },
             ],
-            major:[
-                {required: true, message: '请输入学生所在专业', trigger: 'blur' }
-            ]
+            // select 所要渲染的宿舍的列表
+            rooms:[],
+            saveBtnState:false,
+            // 表单验证
+            ruleForm:{
+                num:'',
+                name:'',
+                liveStatus:'',
+                major:''
+            },
+            // 表单验证规则
+            rules:{
+                num:[
+                    { required: true, message: '请输入学生学号', trigger: 'blur' },
+                    { min: 11, max: 11, message: '长度11 个字符', trigger: 'blur' }
+                ],
+                name:[
+                    { required: true, message: '请输入学生姓名', trigger: 'blur' },
+                    { min: 2, max: 5, message: '长度在 2 到 5 个字符', trigger: 'blur' }
+                ],
+                major:[
+                    {required: true, message: '请输入学生所在专业', trigger: 'blur' }
+                ]
+            }
         }
-      }
+    },
+    methods:{
+        sexChange(){},
+        liveChange(){},
+        selectAddress(){},
+        selectRoom(){},
+        save(){}
     }
 })
 </script>

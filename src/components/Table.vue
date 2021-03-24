@@ -1,8 +1,7 @@
-// 分配宿舍
+// 表格模板
 <template lang="pug">
-    .distribution
-        TopSearch(:addFlag="false")
-        .buttomContent
+    .table
+        .tableContent
             el-table.studentTable(:data="showStudents.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
                 el-table-column(prop="num" sortable label="学号")
                 el-table-column(prop="name" sortable label="姓名")
@@ -17,55 +16,23 @@
                         // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
                         el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope.$index)") 编辑
                         el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
-        // 分页器
-        Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")  
+        // 分页器 
+        Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
 
-        // 弹框出来，弹筐里具体的内容
-        el-dialog.studentDialog(title="学生信息" :visible.sync="dialogVisible" width="40%" :before-close="handleClose")
-            // ref="ruleForms" ruleForms 代指整个表单                      
-            el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
-                // 学号唯一，不能修改
-                .editRow 学  号：{{editNum}} 
-                .editRow 姓  名：{{ruleForm.name}}
-                .editRow 性  别：{{locked}}
-                .editRow 住宿状态：{{liveLocked}}
-                .editRow 宿舍楼：
-                    // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
-                    el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
-                        el-option(v-for="item in buildings"
-                            :key="item.buildingId"
-                            :label="item.label"     
-                            :value="item.buildingId"
-                            :disabled="item.disabled")
-                .editRow 宿舍号：
-                    el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
-                        el-option(v-for="item in rooms"
-                            :key="item.roomId"
-                            :label="item.room"
-                            :value="item.roomId"
-                            :disabled="item.disabled")
-                .editRow 专  业：{{ruleForm.major}}
-                
-                el-form-item.buttons
-                    // :disabled="saveBtnState"
-                    // dialogVisible 对话框是否可见
-                    // save(rulesForms) 传整个表单对象
-                    el-button(type="primary" :dialogVisible="dialogVisible" @click.prevent="save('ruleForms')") 保存
-                    el-button(type="danger" @click="dialogVisible = false") 取消
+        // 对话框
 </template>
 
 <script>
-import TopSearch from '../components/TopSearch'
 import Pagination from '../components/pagination'
 export default ({
-    components:{
-        TopSearch,
+    components:{    
         Pagination
+    },
+    props:{
+        showStudents:Array
     },
     data() {
         return{
-            // 用来判断是按照何种方式搜索
-            value:'',
             // 楼栋的name
             buildingValue:'',
             // 编辑 对话框是否隐藏
@@ -78,142 +45,7 @@ export default ({
             roomsValue:'',
             editIndex:'',
             inputSearch: '',
-            // 学生管理 搜索方式
-            searchOptions:[
-                {
-                    value: 1,
-                    label: '按学号搜索'
-                },
-                {
-                    value: 2,
-                    label: '按姓名搜索'
-                },
-            ],
-            // 全部的学生信息
-            students:[
-                {
-                    num:20170101001,
-                    name:'小谭',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:3,
-                    building:'女一宿舍楼',
-                    room:708,
-                    major:'追光'
-                },
-                {
-                    num:20170101002,
-                    name:'小齐',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:3,
-                    building:'女一宿舍楼',
-                    room:708,
-                    major:'追光'
-                },
-                {
-                    num:20170101003,
-                    name:'鼬内',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:3,
-                    building:'女一宿舍楼',
-                    room:708,
-                    major:'追光'
-                },
-                {
-                    num:20170101004,
-                    name:'小黑',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:3,
-                    building:'女一宿舍楼',
-                    room:708,
-                    major:'追光'
-                },
-                {
-                    num:20160102121,
-                    name:'张三',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:1,
-                    building:'男一宿舍楼',
-                    room:306,
-                    major:'商务英语'
-                },
-                {
-                    num:20160102122,
-                    name:'李四',
-                    sex:'男',
-                    liveStatus:'退宿',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'商务英语'
-                },
-                {
-                    num:20160102103,
-                    name:'李尔',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:3,
-                    building:'女一宿舍楼',
-                    room:205,
-                    major:'商务英语'
-                },
-                {
-                    num:20160101201,
-                    name:'汪柳',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101205,
-                    name:'程漆',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101206,
-                    name:'卢飞',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101207,
-                    name:'娜美',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101208,
-                    name:'妮可',
-                    sex:'女',
-                    liveStatus:'未安排',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'国际贸易'
-                },
-            ],
             // 在页面上渲染的数据
-            showStudents:[],
             editNum:'',
             editName:'',
             editSex:'',
@@ -299,12 +131,7 @@ export default ({
             // select 所要渲染的宿舍的列表
             rooms:[],
             saveBtnState:false,
-            // 表单验证
-            ruleForm:{
-                name:'',
-                liveStatus:'',
-                major:''
-            },
+            
             // 表单验证规则
             rules:{
                 name:[
@@ -317,18 +144,12 @@ export default ({
             },
             tableData:[],
             currentPage: 1,//默认显示第一页
-            pageSize:10,//默认每页显示10条
+            pageSize:5,//默认每页显示10条
             totalNum: 0
         }
     },
-    created(){
-        this.showStudent()
-    },
     methods: {
         // showStudent[] 赋初始值（所有的学生信息）
-        showStudent(){
-            this.showStudents = this.students
-        },
         edit(index){
             // 清空 rooms
             this.rooms=[]
@@ -455,11 +276,6 @@ export default ({
                 })
                 .catch(_ => {});
         },
-        // 关闭对话框
-        handleClose(done) {
-            // 点击右上角的 x 直接关闭
-            done();
-        },
         // 根据所选楼栋，添加该楼栋的宿舍信息，并设置禁用
         roomsDisabled(){
             for(let i=0;i<this.AllRooms.length;i++){
@@ -475,32 +291,15 @@ export default ({
             }
         },
         getNewPage:function(data){
-            // console.log(data);
+            console.log(data);
             this.currentPage = data
         }
     }
 })
 </script>
-
 <style lang="scss" scoped>
-.distribution{
-    padding-left: 20px;
-    box-sizing: border-box;
-    .topSearch{
-        padding-bottom: 40px;
-        .searchSelect{
-            float: left;
-        }
-        .searchInput{
-            width: 20%;
-            float: left;
-            margin: 0 15px;
-        }
-        .searchButton{
-            float: left;
-        }
-    }
-    .buttomContent{
+.table{
+    .tableContent{
         width: 80%;
         margin: 30px 0;
     }
@@ -512,9 +311,6 @@ export default ({
             .editInput{
                 width: 50%;
             }
-        }
-        .editTips{
-            color: red;
         }
         .buttons{
             padding-left: 35%;

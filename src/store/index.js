@@ -32,11 +32,12 @@ export default new Vuex.Store({
 
       }
     },
-    //关闭标签
+    //关闭 面包屑标签
     closeTab(state, val) {
       let result = state.tabsList.findIndex(item => item.name === val.name)
       state.tabsList.splice(result, 1)
     },
+    // 点击面包屑进行跳转时，激活对应的左侧的菜单栏
     changePath(state,newPath){
       state.currentPath = newPath
     }

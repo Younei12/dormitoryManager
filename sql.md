@@ -142,7 +142,7 @@
         account:'adminlili',
         password:'654321',
         status:1,
-        jurisdiction:2  
+        role:2  
     },
     {
         id:2,
@@ -153,7 +153,7 @@
         account:'adminwan',
         password:'565656',
         status:1,
-        jurisdiction:1 
+        role:1 
     }
 ]
 jurisdiction:2为超级管理员，有权限访问 管理员管理模块，可对 其他管理员 进行增删改查

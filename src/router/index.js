@@ -75,14 +75,16 @@ const routes = [
       {
         path:'/administrators',
         name:'Administrators',
+        // meta 做权限控制,只有角色权限为2的管理员才能访问该路由
+        meta:{
+          role:[2]  
+        },
         component: () => import('../views/Administrators.vue')
       },
       // 首页
       {
         path:'/index',
-        name:'Index',
-        // meta 做权限控制
-        meta:[],
+        name:'Index',        
         component: () => import('../views/Index.vue')
       }
     ]

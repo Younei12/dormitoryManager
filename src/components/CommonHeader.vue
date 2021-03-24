@@ -4,12 +4,12 @@
             :key="tag.name"
             size="small"
             v-for="(tag, index) in tags"
-            :closable="tag.name !== 'index'"
+            :closable="tag.name !== '首页'"
             :disable-transitions="false"
             @close="handleClose(tag, index)"
             @click="changeMenu(tag)"
             :effect="$route.path === tag.path ? 'dark' : 'plain'") {{tag.name}}
-        
+        //- closable是设置 面包屑右上角的 X，这里是判断不允许关闭首页，其他页面都可关闭
 </template>
 
 <script>
@@ -27,16 +27,16 @@
             ...mapMutations({
                 closeTab: 'closeTab'
             }),
-            //关闭标签
+            //关闭面包屑
             handleClose(tag, index) {
                 let length = this.tags.length - 1
                 //vuex调方法的另一种写法
                 this.closeTab(tag)
-                // 如果关闭的标签的路由不是当前路由的话，就不跳转
+                // 如果关闭的面包屑的路由不是当前路由的话，就不跳转
                 if (tag.path != this.$route.path) {
                     return
                 }
-                // 关闭的标签是最右边的话，往左边跳转一个
+                // 关闭的面包屑是最右边的话，往左边跳转一个
                 if (index == length) {
                     // 改变面包屑的显示
                     this.$router.push({ path: this.tags[index - 1].path })
