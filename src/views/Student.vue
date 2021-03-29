@@ -2,83 +2,15 @@
 <template lang="pug">
     .student
         TopSearch(:addFlag="true")
-        //- .buttomContent
-        //-     el-table.studentTable(:data="showStudents.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
-        //-         el-table-column(prop="num" sortable label="学号")
-        //-         el-table-column(prop="name" sortable label="姓名")
-        //-         el-table-column(prop="sex" sortable label="性别")
-        //-         el-table-column(prop="liveStatus" sortable label="住宿状态")
-        //-         el-table-column(prop="building" sortable label="宿舍楼")
-        //-         el-table-column(prop="room" sortable label="宿舍号")
-        //-         el-table-column(prop="major" sortable label="专业")
-        //-         el-table-column(label="操作")
-        //-             template(slot-scope="scope")
-        //-                 // @click="dialogVisible = true" 触发弹框
-        //-                 // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
-        //-                 el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope.$index)") 编辑
-        //-                 el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
         Table(:showStudents="showStudents")
-        // 分页器 
-        //- Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
-
-        // 弹框出来，弹筐里具体的内容
-        //- el-dialog.studentDialog(title="学生信息" :visible.sync="dialogVisible" width="40%")
-        //-     // ref="ruleForms" ruleForms 代指整个表单                      
-        //-     el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
-        //-         // 学号唯一，不能修改
-        //-         .editRow 学  号：{{editNum}} 
-        //-         .editRow
-        //-             el-form-item(label="姓名" prop="name")
-        //-                 el-input.editInput(v-model="ruleForm.name")
-        //-         .editRow
-        //-             el-form-item(label="性别")
-        //-                 // v-model="locked" 页面显示选中效果
-        //-                 el-radio-group(v-model="locked" @change="sexChange")
-        //-                     el-radio(label="男")
-        //-                     el-radio(label="女")
-        //-         .editRow
-        //-             el-form-item(label="住宿状态")
-        //-                 el-radio-group(v-model="liveLocked" @change="liveChange")
-        //-                     el-radio(label="住宿")
-        //-                     el-radio(label="退宿")
-        //-                     el-radio(label="未安排")
-        //-         .editRow 宿舍楼：
-        //-             // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
-        //-             el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
-        //-                 el-option(v-for="item in buildings"
-        //-                     :key="item.buildingId"
-        //-                     :label="item.label"     
-        //-                     :value="item.buildingId"
-        //-                     :disabled="item.disabled")
-        //-         .editRow 宿舍号：
-        //-             el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
-        //-                 el-option(v-for="item in rooms"
-        //-                     :key="item.roomId"
-        //-                     :label="item.room"
-        //-                     :value="item.roomId"
-        //-                     :disabled="item.disabled")
-        //-         .editRow
-        //-             el-form-item(label="专业" prop="major")
-        //-                 el-input.editInput(v-model="ruleForm.major")
-                
-        //-         el-form-item.buttons
-        //-             // :disabled="saveBtnState"
-        //-             // dialogVisible 对话框是否可见
-        //-             // save(rulesForms) 传整个表单对象
-        //-             el-button(type="primary" :dialogVisible="dialogVisible" @click.prevent="save('ruleForms')") 保存
-        //-             el-button(type="danger" @click="dialogVisible = false") 取消
 </template>
  
 <script>
-import StudentDialog from '../components/studentDialog'
 import TopSearch from '../components/TopSearch'
-import Pagination from '../components/pagination'
 import Table from '../components/Table'
 export default {
     components:{
-        StudentDialog,
         TopSearch,
-        Pagination,
         Table
     },
     data() {
@@ -520,22 +452,5 @@ export default {
 .student{
     padding-left: 20px;
     box-sizing: border-box;
-    .buttomContent{
-        width: 80%;
-        margin: 30px 0;
-    }
-    .studentDialog{
-        .editRow{
-            padding-left: 100px;
-            margin: 20px 0;
-            text-align: left;
-            .editInput{
-                width: 50%;
-            }
-        }
-        .buttons{
-            padding-left: 35%;
-        }
-    }
 }
 </style>

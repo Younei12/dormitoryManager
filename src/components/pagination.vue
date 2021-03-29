@@ -26,6 +26,9 @@ export default ({
             cTotalNum:this.totalNum
         }
     },
+    created(){
+        console.log(this.currentPage,this.pageSize,this.totalNum);
+    },
     methods:{
         handleSizeChange(val) {
             console.log(`每页 ${val} 条`);

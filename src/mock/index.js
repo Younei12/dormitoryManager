@@ -1,0 +1,44 @@
+// import Mock from 'mockjs'
+const Mock = require('mockjs')
+const Random = Mock.Random
+Mock.setup({
+    timeout:1000
+})
+Mock.mock('/students','get',()=>{
+    return{
+        "status":200,
+        "data|5":[{
+            "num":/[1-9][0-9]{11}/,
+            "name":Random.cname(),
+            "sex|1":{
+                "1":"男",
+                "2":"女"
+            },
+            "status|1":{
+                "1":"住宿",
+                "2":"未分配",
+                "3":"退宿",
+            },
+            "building|1":{
+                "1":"男一宿舍楼",
+                "2":"男二宿舍楼",
+                "3":"女一宿舍楼",
+                "4":"女二宿舍楼"
+            },
+            "room|1":{
+                1:102,
+                2:104,
+                3:405,
+                4:406,
+                5:302,
+                6:306
+            },
+            "major|1":{
+                1:"商务英语",
+                2:"国际贸易",
+                3:"电子商务",
+                4:"影视编辑"
+            }
+        }]
+    }
+})

@@ -5,6 +5,7 @@ import store from './store'
 import ElementUI from 'element-ui';
 import echarts from 'echarts'
 import XLSX from 'xlsx'
+import './mock/index'
 
 import 'element-ui/lib/theme-chalk/index.css';
 import "./assets/styles/base.scss"

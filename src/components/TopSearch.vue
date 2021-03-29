@@ -9,7 +9,7 @@
         .addStudents(v-if="addFlag")
             el-button.insertButton(@click="addDialogShow" type="success" :dialogVisible="addDialogVisible") 添加学生
             el-dialog.studentDialog(title="添加学生" :visible.sync="addDialogVisible" width="40%")
-                StudentDialog
+                AddStudentDialog
             el-upload(
                 class="upload"
                 action=""
@@ -21,11 +21,11 @@
 </template>
 
 <script>
-import StudentDialog from '../components/studentDialog'
+import AddStudentDialog from '../components/AddStudentDialog'
 import XLSX from 'xlsx'
 export default ({
     components:{
-        StudentDialog
+        AddStudentDialog
     },
     props:{
         addFlag:Boolean
