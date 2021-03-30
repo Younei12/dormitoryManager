@@ -488,17 +488,6 @@ export default ({
     box-sizing: border-box;
     .topSearch{
         padding-bottom: 40px;
-        .searchSelect{
-            float: left;
-        }
-        .searchInput{
-            width: 20%;
-            float: left;
-            margin: 0 15px;
-        }
-        .searchButton{
-            float: left;
-        }
     }
     .buttomContent{
         width: 80%;

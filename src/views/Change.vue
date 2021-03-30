@@ -142,7 +142,6 @@ export default ({
             ],
             // 在页面上渲染的数据
             showStudents:[],
-            
             tableData:[],
             currentPage: 1,//默认显示第一页
             pageSize:10,//默认每页显示10条
@@ -177,5 +176,11 @@ export default ({
 </script>
 
 <style lang="scss" scoped>
-
+.change{
+    padding-left: 20px;
+    box-sizing: border-box;
+    .topSearch{
+        padding-bottom: 40px;
+    }
+}
 </style>

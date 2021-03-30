@@ -24,6 +24,7 @@
     "@vue/cli-plugin-vuex": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
     "mockjs": "^1.1.0",
+    "moment": "^2.29.1",
     "pug": "^3.0.2",
     "pug-plain-loader": "^1.1.0",
     "sass-loader": "^7.3.1",
