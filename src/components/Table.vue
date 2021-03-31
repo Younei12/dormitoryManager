@@ -19,7 +19,7 @@
 
         // 编辑学生信息对话框
         el-dialog.studentDialog(title="学生信息" :visible.sync="editDialogVisible" width="40%")
-            studentDialog(:editIndex="editIndex" :showStudents="showStudents" @diaFalse="closeDia")
+            studentDialog(:editIndex="editIndex" :showStudents="showStudents" @diaFalse="closeDia" ref="stuDia")
 
         // 分页器 
         Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
@@ -57,6 +57,7 @@ export default ({
         changeEditDialog(index){
             this.editIndex = index
             this.editDialogVisible = true
+            console.log(index);
         },
         //  删除某个学生的信息
         handleDelete(index){

@@ -55,14 +55,14 @@
         rooms:36
     },
     {
-        buildingId::2,
+        buildingId:2,
         building:'男二',
         buildingType:'男寝',
         layers:6,
         rooms:36
     },
     {
-        buildingId::3,
+        buildingId:3,
         building:'女一',
         buildingType:'女寝',
         layers:6,

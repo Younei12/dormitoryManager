@@ -1,211 +1,132 @@
 // 退宿审批
 <template lang="pug">
     .building
-        TopSearch
-        Table(:showStudents="showStudents")
+        .topSearch
+            el-input.searchInput(placeholder="请输入想要搜索的楼栋" v-model="inputSearch")
+            el-button.searchButton(@click="search") 搜索
+
+            .addBuilding
+                el-button.insertButton(@click="" type="success" :dialogVisible="addDialogVisible") 添加楼栋
+                el-dialog.studentDialog(title="添加楼栋" :visible.sync="addDialogVisible" width="40%")
+                    AddStudentDialog
+        
+        .buildingTable
+            el-table.studentTable(:data="buildings.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
+                el-table-column(prop="building" sortable label="楼栋名称")
+                el-table-column(prop="buildingType" sortable label="楼栋类别")
+                el-table-column(prop="layers" sortable label="楼层数")
+                el-table-column(prop="rooms" sortable label="寝室数")
+                el-table-column( label="操作")
+                    template(slot-scope="scope")
+                        // @click="dialogVisible = true" 触发弹框
+                        // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
+                        el-button(size="mini" :dialogVisible="buildingDialogVisible"  @click="edit(scope.$index)") 编辑
+                        el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
+
+        el-dialog.buildingDialog(title="楼栋管理" :visible.sync="buildingDialogVisible" width="40%")
+            // ref="ruleForms" ruleForms 代指整个表单                      
+            el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
+                .editRow
+                    el-form-item(label="楼栋名称：" prop="building")
+                        el-input.editInput(v-model="ruleForm.building")
+                .editRow
+                    el-form-item(label="楼栋类别：" prop="buildingType")
+                        el-input.editInput(v-model="ruleForm.buildingType")
+                .editRow
+                    el-form-item(label="楼 层 数 ：" prop="layers")
+                        el-input.editInput(v-model="ruleForm.layers")
+                .editRow
+                    el-form-item(label="寝 室 数 ：" prop="rooms")
+                        el-input.editInput(v-model="ruleForm.rooms")
+
+                el-form-item.buttons
+                    // :disabled="saveBtnState"
+                    // dialogVisible 对话框是否可见
+                    // save(rulesForms) 传整个表单对象
+                    el-button(type="primary" :dialogVisible="buildingDialogVisible" @click.prevent="save('ruleForms')") 保存
+                    el-button(type="danger" @click="buildingDialogVisible = false") 取消
+
+        Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
 </template>
 <script>
-import TopSearch from '../components/TopSearch'
-import Table from '../components/Table'
+import Pagination from '../components/pagination'
 export default ({
     components:{
-        TopSearch,
-        Table
+        Pagination
     },
     data() {
         return{
-            students:[
+            addDialogVisible:false,
+            buildingDialogVisible:false,
+            inputSearch:'',
+            buildings:[
                 {
-                    num:20160102121,
-                    name:'张三',
-                    sex:'男',
-                    liveStatus:'住宿',
                     buildingId:1,
-                    building:'男一宿舍楼',
-                    room:306,
-                    major:'商务英语'
+                    building:'男一',
+                    buildingType:'男寝',
+                    layers:6,
+                    rooms:36
                 },
                 {
-                    num:20160102122,
-                    name:'李四',
-                    sex:'男',
-                    liveStatus:'退宿',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'商务英语'
+                    buildingId:2,
+                    building:'男二',
+                    buildingType:'男寝',
+                    layers:6,
+                    rooms:36
                 },
                 {
-                    num:20160102103,
-                    name:'李尔',
-                    sex:'女',
-                    liveStatus:'住宿',
                     buildingId:3,
-                    building:'女一宿舍楼',
-                    room:205,
-                    major:'商务英语'
-                },
-                {
-                    num:20160101201,
-                    name:'汪柳',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101205,
-                    name:'程漆',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101206,
-                    name:'卢飞',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101207,
-                    name:'娜美',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101208,
-                    name:'妮可',
-                    sex:'女',
-                    liveStatus:'未安排',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101205,
-                    name:'程漆',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101206,
-                    name:'卢飞',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101207,
-                    name:'娜美',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101208,
-                    name:'妮可',
-                    sex:'女',
-                    liveStatus:'未安排',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101205,
-                    name:'程漆',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101206,
-                    name:'卢飞',
-                    sex:'男',
-                    liveStatus:'住宿',
-                    buildingId:2,
-                    building:'男二宿舍楼',
-                    room:403,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101207,
-                    name:'娜美',
-                    sex:'女',
-                    liveStatus:'住宿',
-                    buildingId:4,
-                    building:'女二宿舍楼',
-                    room:103,
-                    major:'国际贸易'
-                },
-                {
-                    num:20160101208,
-                    name:'妮可',
-                    sex:'女',
-                    liveStatus:'未安排',
-                    buildingId:'',
-                    building:'',
-                    room:'',
-                    major:'国际贸易'
-                },
+                    building:'女一',
+                    buildingType:'女寝',
+                    layers:6,
+                    rooms:36
+                }
             ],
-            tableDataName: "",
-            // 最后渲染的数组
-            showStudents: [],
+            ruleForm:{
+                buildingId:'',
+                building:'',
+                buildingType:'',
+                layers:'',
+                rooms:''
+            },
+            rules:{
+
+            },
             currentPage: 1,
             pageSize: 10,
             totalItems: 0,
+            totalNum: 0,
             flag:false
         }
     },
     created(){
-        this.showStudent()
     },
     methods:{
-        // showStudent[] 赋初始值（所有的学生信息）
-        showStudent(){
-            this.showStudents = this.students
-        },
+        search(){},
         edit(index){
+            this.buildingDialogVisible = true
             // 获取当前这一行的index
             this.editIndex=index
+
+            this.ruleForm.buildingId = this.buildings[index].buildingId
+            this.ruleForm.building = this.buildings[index].building
+            this.ruleForm.buildingType = this.buildings[index].buildingType
+            this.ruleForm.layers = this.buildings[index].layers
+            this.ruleForm.rooms = this.buildings[index].rooms
         },
         // 删除一行
         handleDelete(index){
             // 询问后再关闭
             this.$confirm('确认删除？')
                 .then(_ => {
-                    this.showStudents.splice(index,1)
+                    this.buildings.splice(index,1)
                     this.$root.$message.success('删除成功');
                 })
                 .catch(_ => {});
+        },
+        getNewPage:function(data){
+            console.log(data);
+            this.currentPage = data
         }
     }
 })
@@ -216,7 +137,28 @@ export default ({
     padding-left: 20px;
     box-sizing: border-box;
     .topSearch{
-        padding-bottom: 40px;
+        padding-bottom: 30px;
+        .searchInput{
+            width: 20%;
+            margin-right: 15px;
+        }
+        .addBuilding{
+            display: inline-block;
+            margin-left: 15px;
+        }
+    }
+    .buildingDialog{
+        .editRow{
+            padding-left: 100px;
+            margin: 20px 0;
+            text-align: left;
+            .editInput{
+                width: 50%;
+            }
+        }
+        .buttons{
+            padding-left: 35%;
+        }
     }
 }
 </style>

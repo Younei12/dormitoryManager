@@ -48,7 +48,6 @@
 </template>
 
 <script>
-import api from '../api/index.js'
 export default({
     props:{
         editIndex:Number,
@@ -157,11 +156,13 @@ export default({
         this.edit()
     },
     methods:{
-        async getStudents(){
-            let res = await api.getStudents()
-            console.log(res);
-        },
+        // async getStudents(){
+        //     let res = await api.getStudents()
+        //     console.log(res);
+        // },
         edit(){
+            console.log(this.editIndex);
+            console.log(this.showStudents[this.editIndex]);
             // 清空 rooms
             this.rooms=[]
             console.log(this.rooms);

@@ -2,7 +2,7 @@
 <template lang="pug">
     .repair
         TopSearch
-        el-table.studentTable(:data="approval.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe style="width: 100%")
+        el-table.repairTable(:data="approvals.slice((currentPage-1)*pageSize,currentPage*pageSize)" border stripe)
             el-table-column(prop="time" :formatter="dateFormat" sortable label="创建时间")
             el-table-column(prop="num" sortable label="学号")
             el-table-column(prop="name" sortable label="姓名")
@@ -87,7 +87,7 @@ export default ({
     data() {
         return{
             repairDialogVisible:false,
-            approval:[
+            approvals:[
                 {
                     time:1491559642000,
                     num:2020052601,
@@ -151,16 +151,12 @@ export default ({
         showStudent(){
             this.showStudents = this.students
         },
-        edit(index){
-            // 获取当前这一行的index
-            this.editIndex=index
-        },
         // 删除一行
         handleDelete(index){
             // 询问后再关闭
             this.$confirm('确认删除？')
                 .then(_ => {
-                    this.approval.splice(index,1)
+                    this.approvals.splice(index,1)
                     this.$root.$message.success('删除成功');
                 })
                 .catch(_ => {});
@@ -171,8 +167,19 @@ export default ({
             if(date == undefined){return ''};
             return moment(date).format("YYYY-MM-DD")
         },
-        changeRepairDialog(){
+        changeRepairDialog(index){
             this.repairDialogVisible = true
+            this.ruleForm.time = this.approvals[index].time
+            this.ruleForm.num = this.approvals[index].num
+            this.ruleForm.name = this.approvals[index].name
+            this.ruleForm.buildingNum = this.approvals[index].buildingNum
+            this.ruleForm.building = this.approvals[index].building
+            this.ruleForm.layer = this.approvals[index].layer
+            this.ruleForm.room = this.approvals[index].room
+            this.ruleForm.describe = this.approvals[index].describe
+            this.ruleForm.phone = this.approvals[index].phone
+            this.ruleForm.repairman = this.approvals[index].repairman
+            this.ruleForm.repairStatus = this.approvals[index].repairStatus
         },
         save(){
             this.repairDialogVisible = false
@@ -187,6 +194,9 @@ export default ({
     box-sizing: border-box;
     .topSearch{
         padding-bottom: 70px;
+    }
+    .repairTable{
+        width: 95%;
     }
     .repairlDialog{
         .editRow{
