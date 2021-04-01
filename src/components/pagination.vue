@@ -27,7 +27,7 @@ export default ({
         }
     },
     created(){
-        console.log(this.currentPage,this.pageSize,this.totalNum);
+        // console.log(this.currentPage,this.pageSize,this.totalNum);
     },
     methods:{
         handleSizeChange(val) {

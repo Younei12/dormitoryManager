@@ -15,7 +15,7 @@
                     template(slot-scope="scope")
                         // @click="dialogVisible = true" 触发弹框
                         // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
-                        el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope.$index)") 编辑
+                        el-button(size="mini" :dialogVisible="dialogVisible"  @click="edit(scope,row)") 编辑
                         el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
         // 分页器
         Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")  

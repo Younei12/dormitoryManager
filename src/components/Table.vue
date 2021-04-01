@@ -14,12 +14,12 @@
                     template(slot-scope="scope")
                         // @click="dialogVisible = true" 触发弹框
                         // 将 dialogVisible 的值放在data中，就可以通过点击事件来控制，并同时进行传值操作
-                        el-button(size="mini" :dialogVisible="editDialogVisible"  @click="changeEditDialog(scope.$index)") 编辑
+                        el-button(size="mini" :dialogVisible="editDialogVisible"  @click="changeEditDialog(scope)") 编辑
                         el-button(@click="handleDelete(scope.$index)" type="danger" size="small") 删除
 
         // 编辑学生信息对话框
         el-dialog.studentDialog(title="学生信息" :visible.sync="editDialogVisible" width="40%")
-            studentDialog(:editIndex="editIndex" :showStudents="showStudents" @diaFalse="closeDia" ref="stuDia")
+            studentDialog(@diaFalse="closeDia" ref="stuDia")
 
         // 分页器 
         Pagination(:currentPage="currentPage" :pageSize="pageSize" :totalNum="totalNum" @updatePage="getNewPage")
@@ -35,6 +35,9 @@ export default ({
     },
     props:{
         showStudents:Array
+    },
+    created(){
+        // this.$refs.stuDia.edit()
     },
     data() {
         return{
@@ -54,10 +57,14 @@ export default ({
         this.totalNum = this.showStudents.length/10
     },
     methods: {
-        changeEditDialog(index){
-            this.editIndex = index
+        changeEditDialog(scope){
+            this.editIndex = scope.$index
             this.editDialogVisible = true
-            console.log(index);
+            // 父组件调用子组件的方法时，第一次调用会失效报错
+            // 失效原因就是在created()域调用时，子组件还未成功渲染，因此设置一个延缓时间即可
+            setTimeout(()=>{
+                this.$refs.stuDia.edit(scope.row);
+            },5)
         },
         //  删除某个学生的信息
         handleDelete(index){

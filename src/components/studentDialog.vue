@@ -4,32 +4,32 @@
         // ref="ruleForms" ruleForms 代指整个表单                      
         el-form(:model="ruleForm" :rules="rules" ref="ruleForms")
             // 学号唯一，不能修改
-            .editRow 学  号：{{editNum}} 
+            .editRow 学  号：{{ruleForm.num}} 
             .editRow
                 el-form-item(label="姓名" prop="name")
                     el-input.editInput(v-model="ruleForm.name")
             .editRow
                 el-form-item(label="性别")
                     // v-model="locked" 页面显示选中效果
-                    el-radio-group(v-model="locked" @change="sexChange")
+                    el-radio-group(v-model="ruleForm.sex" @change="sexChange")
                         el-radio(label="男")
                         el-radio(label="女")
             .editRow
                 el-form-item(label="住宿状态")
-                    el-radio-group(v-model="liveLocked" @change="liveChange")
+                    el-radio-group(v-model="ruleForm.liveStatus" @change="liveChange")
                         el-radio(label="住宿")
                         el-radio(label="退宿")
                         el-radio(label="未安排")
             .editRow 宿舍楼：
                 // 页面上显示的是 label 的值，实际的 value 是 buildingId 的值
-                el-select(v-model="buildingValue" placeholder="请选择" @change="selectAddress")
+                el-select(v-model="ruleForm.building" placeholder="请选择" @change="selectAddress")
                     el-option(v-for="item in buildings"
                         :key="item.buildingId"
                         :label="item.label"     
                         :value="item.buildingId"
                         :disabled="item.disabled")
             .editRow 宿舍号：
-                el-select(v-model="roomsValue" placeholder="请选择" @change="selectRoom")
+                el-select(v-model="ruleForm.room" placeholder="请选择" @change="selectRoom")
                     el-option(v-for="item in rooms"
                         :key="item.roomId"
                         :label="item.room"
@@ -50,16 +50,11 @@
 <script>
 export default({
     props:{
-        editIndex:Number,
-        showStudents:Array
+    },
+    created(){
     },
     data() {
       return{
-            editNum:"",
-            locked:'',
-            liveLocked:'',
-            buildingValue:"",
-            roomsValue:"",
             dialogVisible:false,
             buildings:[
                 {
@@ -136,8 +131,13 @@ export default({
             rooms:[],
             // 表单验证
             ruleForm:{
+                num:'',
                 name:'',
+                sex:'',
                 liveStatus:'',
+                buildingId:'',
+                building:'',
+                room:'',
                 major:''
             },
             rules:{
@@ -152,22 +152,14 @@ export default({
       }  
     },
     mounted(){
-        // this.getStudents()
-        this.edit()
     },
     methods:{
-        // async getStudents(){
-        //     let res = await api.getStudents()
-        //     console.log(res);
-        // },
-        edit(){
-            console.log(this.editIndex);
-            console.log(this.showStudents[this.editIndex]);
+        edit(scopeRow){
+            console.log(scopeRow);
             // 清空 rooms
             this.rooms=[]
-            console.log(this.rooms);
             // 清空 宿舍号
-            this.roomsValue = ''
+            this.ruleForm.room = ''
             // 每次点击编辑按钮的时候，将数组中的状态都重置为true，否则点击一次之后被禁用选项的状态会一直保持
             for(let i=0;i<this.buildings.length;i++){
                 this.buildings[i].disabled=false
@@ -175,15 +167,15 @@ export default({
             // 点击编辑后，修改对话框控制显示隐藏属性的值
             this.dialogVisible=true
             // 获取当前点击这一行的学号
-            this.editNum = this.showStudents[this.editIndex].num
+            this.ruleForm.num = scopeRow.num
             // 获取当前点击这一行的姓名
-            this.ruleForm.name = this.showStudents[this.editIndex].name
+            this.ruleForm.name = scopeRow.name
             // 获取当前点击这一行的住宿状态
-            this.liveLocked = this.showStudents[this.editIndex].liveStatus
+            this.ruleForm.liveStatus = scopeRow.liveStatus
             // 获取当前点击这一行的性别
-            if(this.showStudents[this.editIndex].sex == '女'){
+            if(scopeRow.sex == '女'){
                 // 如果当前这一行的性别是女生，则设置单选按钮的默认值为女
-                this.locked = '女'
+                this.ruleForm.sex = '女'
                 // 遍历宿舍楼列表，将全部男生宿舍禁用
                 for(let i=0;i<this.buildings.length;i++){
                     if(this.buildings[i].buildingType!='女寝'){
@@ -191,7 +183,7 @@ export default({
                     }
                 }
             }else{
-                this.locked = '男'
+                this.ruleForm.sex = '男'
                 for(let i=0;i<this.buildings.length;i++){
                     if(this.buildings[i].buildingType!='男寝'){
                         this.buildings[i].disabled=true
@@ -199,18 +191,18 @@ export default({
                 }
             }
             // 获取当前这一行所在的宿舍楼   值：XX宿舍楼
-            this.buildingValue = this.showStudents[this.editIndex].building
+            this.ruleForm.building = scopeRow.building
 
             // 当前楼栋的 id 
-            this.nowBuilding = this.showStudents[this.editIndex].buildingId
-            console.log(this.nowBuilding);
+            this.ruleForm.buildingId = scopeRow.buildingId
+            // console.log(this.ruleForm.buildingId);
             // 当前选择的这一栋楼内 还有床位的寝室
             this.roomsDisabled()
 
             //  获取当前这一行所在的寝室号
-            this.roomsValue = this.showStudents[this.editIndex].room
+            this.ruleForm.room = scopeRow.room
             // 获取专业
-            // this.ruleForm.major = this.showStudents[index].major
+            this.ruleForm.major = scopeRow.major
         },
         // 保存后，把修改的内容替换原来的内容
         save(formName){
@@ -235,14 +227,14 @@ export default({
             })
         },
         sexChange(){
-            this.buildingValue='请选择'
-            this.roomsValue=''
+            this.ruleForm.building='请选择'
+            this.ruleForm.room=''
             // select框禁用重置
             for(let i=0;i<this.buildings.length;i++){
                 this.buildings[i].disabled=false
             }
             // 性别改变为男时
-            if(this.locked == '男'){
+            if(this.ruleForm.sex == '男'){
                 for(let i=0;i<this.buildings.length;i++){
                     if(this.buildings[i].buildingType!='男寝'){
                         this.buildings[i].disabled=true
@@ -256,15 +248,15 @@ export default({
                     }
                 }
             }
-            if(this.liveLocked!='退宿'){
+            if(this.ruleForm.liveStatus !='退宿'){
                 this.$root.$message('请选择宿舍');
             }
         },
         // 住宿状态
         liveChange(){
-            if(this.liveLocked != '住宿'){
-                this.buildingValue='当前为非住宿状态'
-                this.roomsValue = '当前为非住宿状态'
+            if(this.ruleForm.liveStatus != '住宿'){
+                this.ruleForm.building='当前为非住宿状态'
+                this.ruleForm.rooms = '当前为非住宿状态'
             }
         },
         // 修改宿舍楼栋,这个value是自动传过来的
@@ -272,18 +264,18 @@ export default({
             let obj = {}
             // 当 楼栋 发生改变时，清空宿舍号的值
             this.rooms=[]
-            this.roomsValue =''
+            this.ruleForm.room =''
             // find方法会在buildings数组中遍历寻找符合要求的value，之后再将符合要求的 '对象'，赋值给obj，之后再获取obj中的属性
             obj = this.buildings.find((item) => {
                 return item.buildingId=== value
             })
             // 在这里获取obj的属性，obj就是当前select框中选择的那个完整的对象
-            this.buildingValue=obj.label
+            this.ruleForm.building=obj.label
             // if(this.liveLocked != '住宿'){
             //     this.buildingValue = ''
             // }
             this.liveChange()
-            this.nowBuilding = obj.buildingId
+            this.ruleForm.buildingId = obj.buildingId
             this.roomsDisabled()
         },
         // 修改所在寝室
@@ -307,7 +299,7 @@ export default({
         roomsDisabled(){
             for(let i=0;i<this.AllRooms.length;i++){
                 // console.log(this.AllRooms[i]);
-                if(this.AllRooms[i].buildingId == this.nowBuilding){
+                if(this.AllRooms[i].buildingId == this.ruleForm.buildingId){
                     this.rooms.push(this.AllRooms[i])
                 }
             }
